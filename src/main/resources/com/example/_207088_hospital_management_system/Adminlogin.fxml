@@ -26,7 +26,7 @@
             </HBox>
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                <children>
-                  <Button fx:id="btnAdminLogin" mnemonicParsing="false" text="Login" />
+                  <Button fx:id="btnAdminLogin" mnemonicParsing="false" onAction="#handleOpenDashboard" text="Login" />
                </children>
             </HBox>
          </children>

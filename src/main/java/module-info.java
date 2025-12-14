@@ -11,6 +11,8 @@ module com.example._207088_hospital_management_system {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires java.desktop;
+    requires java.logging;
+    requires java.sql;
 
     opens com.example._207088_hospital_management_system to javafx.fxml;
     exports com.example._207088_hospital_management_system;

@@ -54,11 +54,27 @@ public class db {
             pstmt.setString(7, bloodGroup);
             pstmt.setString(8, history);
 
-            pstmt.executeUpdate();// exicute
+            pstmt.executeUpdate();// execute
             logger.info("New patient registered with ID: " + patientId);
         }
     }
 
+    public String authenticatePatient(String patientId, String password) throws SQLException {
+               getConnection();
+               String sql = "SELECT * FROM patients WHERE patient_id = ? AND password = ?";
 
+               try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                    pstmt.setString(1, patientId);
+                    pstmt.setString(2, password);
+
+                    try (ResultSet rs = pstmt.executeQuery()) {    //check
+                        if (rs.next()) { return rs.getString("patient_id"); }   // paile true
+                        else { return null; }
+                    }
+
+
+               }
+
+    }
 }
 

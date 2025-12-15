@@ -31,9 +31,9 @@ public class PatientRegistrationController {
     private String generatePatientId( db database) throws SQLException {
         if (database == null) return "PAT-ERROR";
 
-        database.getConnection(); // Ensure connection is open
+        database.getConnection();
 
-        // SQL to find the highest number in the patient_id column
+
         String sql = "SELECT COUNT(*) FROM patients";
 
         int rowCount = 0;
@@ -47,7 +47,7 @@ public class PatientRegistrationController {
         }
         int newSerial = rowCount + 1;
 
-        // Format the new serial number (e.g., PAT00001)
+        //  serial number return korlam
         return "PAT" + String.format("%05d", newSerial);
     }
 

@@ -3,6 +3,7 @@ package com.example._207088_hospital_management_system;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -25,7 +26,7 @@ public class AdminloginController {
                  FXMLLoader loader = new FXMLLoader(getClass().getResource("AdminDashboard.fxml"));
               Parent root=loader.load();
               Scene scene = new Scene(root);
-                Stage stage = new Stage();
+                Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
                 stage.setScene(scene);
                 stage.show();
 

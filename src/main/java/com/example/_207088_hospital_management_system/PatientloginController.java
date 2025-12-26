@@ -42,8 +42,13 @@ public class PatientloginController {
             String patientId = txtPatientId.getText();
             String password = txtPatientPass.getText();
 
-            String authenticatedId = database.authenticatePatient(patientId, password);
-            if (authenticatedId != null) {
+            Patient loggedInPatient= database.authenticatePatient(patientId, password);
+            if (loggedInPatient != null) {
+                UserSession.setSession(
+                        loggedInPatient.getPatientId(),
+                        loggedInPatient.getName(),
+                        "PATIENT"
+                );
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PatientDashboard.fxml"));
                 Parent root = fxmlLoader.load();
                 Stage newStage = new Stage();

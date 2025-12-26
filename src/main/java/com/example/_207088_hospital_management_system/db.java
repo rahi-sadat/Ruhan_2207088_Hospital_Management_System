@@ -77,7 +77,7 @@ public class db {
         }
     }
 
-    public String authenticatePatient(String patientId, String password) throws SQLException {
+    public Patient authenticatePatient(String patientId, String password) throws SQLException {
                getPatientConnection();
                String sql = "SELECT * FROM patients WHERE patient_id = ? AND password = ?";
 
@@ -87,7 +87,15 @@ public class db {
                     pstmt.setString(2, password);
 
                     try (ResultSet rs = pstmt.executeQuery()) {    //check
-                        if (rs.next()) { return rs.getString("patient_id"); }   // paile true
+                        if (rs.next()) { return new Patient(
+                                rs.getString("patient_id"),
+                                rs.getString("name"),
+                                rs.getString("phone_number"),
+                                rs.getInt("age"),
+                                rs.getString("gender"),
+                                rs.getString("blood_group"),
+                                rs.getString("medical_history")
+                        ); }   // paile true
                         else { return null; }
                     }
 

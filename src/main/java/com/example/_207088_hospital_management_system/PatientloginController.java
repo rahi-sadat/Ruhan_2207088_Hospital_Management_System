@@ -4,6 +4,7 @@ package com.example._207088_hospital_management_system;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -21,11 +22,8 @@ public class PatientloginController {
 
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PatientRegistrationForm.fxml"));
             Parent root = fxmlLoader.load();
-
-            Stage newStage = new Stage();
+            Stage newStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
             newStage.setTitle("Patient Registration");
-
-
             newStage.setScene(new Scene(root));
             newStage.show();
 

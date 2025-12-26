@@ -29,4 +29,28 @@ public class AdminDashboardController {
         stage.setScene(scene);
         stage.show();
     }
-}
+
+    public void handleShowAddDoctorForm(ActionEvent actionEvent) throws IOException {
+
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AddDoctorForm.fxml"));
+            Parent root = loader.load();
+            centerContentPane.getChildren().setAll(root);
+        }
+    @FXML
+    private void handleViewDoctors(ActionEvent event) {
+        try {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewDoctors.fxml"));
+            Node view = loader.load();
+
+
+            centerContentPane.getChildren().setAll(view);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
+    }
+    }
+

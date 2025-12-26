@@ -2,10 +2,14 @@ package com.example._207088_hospital_management_system;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -31,14 +35,14 @@ public class PatientRegistrationController {
     private String generatePatientId( db database) throws SQLException {
         if (database == null) return "PAT-ERROR";
 
-        database.getConnection();
+        database.getPatientConnection();
 
 
         String sql = "SELECT COUNT(*) FROM patients";
 
         int rowCount = 0;
 
-        try (Statement stmt = database.connection.createStatement();
+        try (Statement stmt = database.patientConn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             if (rs.next()) {
@@ -96,16 +100,25 @@ public class PatientRegistrationController {
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, "Database Error during registration: " + e.getMessage()).showAndWait();
             logger.severe("Database Error: " + e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
 
-    public void handleCloseWindow(ActionEvent actionEvent) {
+    public void handleCloseWindow(ActionEvent actionEvent) throws IOException {
         closeWindow(actionEvent);
     }
-    private void closeWindow(ActionEvent event) {
+    private void closeWindow(ActionEvent event) throws IOException {
 
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.close();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainView.fxml"));
+        Parent root = fxmlLoader.load();
+
+        Stage newStage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+
+
+        newStage.setScene(new Scene(root));
+        newStage.show();
+
     }
 }

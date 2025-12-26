@@ -13,6 +13,7 @@ module com.example._207088_hospital_management_system {
     requires java.desktop;
     requires java.logging;
     requires java.sql;
+    requires javafx.graphics;
 
     opens com.example._207088_hospital_management_system to javafx.fxml;
     exports com.example._207088_hospital_management_system;

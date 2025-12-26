@@ -167,5 +167,23 @@ public class db {
         }
         return doctors;
     }
+    public String authenticateDoctor(String doctorId, String password) throws SQLException {
+        getDoctorConnection();
+        String sql = "SELECT * FROM doctors WHERE id = ? AND password = ?";
+
+
+        try (PreparedStatement pstmt = doctorConn.prepareStatement(sql)) {
+            pstmt.setString(1, doctorId);
+            pstmt.setString(2, password);
+
+            try (ResultSet rs = pstmt.executeQuery()) {    //check
+                if (rs.next()) { return rs.getString("id"); }   // paile true
+                else { return null; }
+            }
+
+
+        }
+
+    }
 }
 

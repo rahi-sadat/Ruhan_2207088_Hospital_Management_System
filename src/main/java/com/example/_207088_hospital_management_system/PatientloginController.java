@@ -50,14 +50,16 @@ public class PatientloginController {
                         "PATIENT"
                 );
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PatientDashboard.fxml"));
+
                 Parent root = fxmlLoader.load();
-                Stage newStage = new Stage();
-                Scene scene = new Scene(root);
-                newStage.setScene(scene);
-                newStage.setTitle("Patient Dashboard");
+
+                Stage newStage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+
+
+                newStage.setScene(new Scene(root));
                 newStage.show();
             } else {
-                 new Alert(Alert.AlertType.ERROR, "Invalid Patient ID or Password").showAndWait();
+                new Alert(Alert.AlertType.ERROR, "Invalid Patient ID or Password").showAndWait();
             }
 
 

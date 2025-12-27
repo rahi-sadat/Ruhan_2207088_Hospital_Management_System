@@ -8,14 +8,17 @@ import java.util.logging.Logger;
 public class db {
     public Connection patientConn;
     public Connection doctorConn;
-  private final Logger logger = Logger.getLogger(db.class.getName());
+    private final Logger logger = Logger.getLogger(db.class.getName());
     public db() {
         try {
             getPatientConnection();
             getDoctorConnection();
             createTable();
             createDoctorTable();
+            createAppointmentTable();
             logger.info("Database initialized and tables verified.");
+
+
         } catch (SQLException e) {
             logger.severe("Could not initialize database: " + e.getMessage());
         }
@@ -55,7 +58,7 @@ public class db {
     public void insertNewPatient(String patientId, String password, String name, String phone,
                                  int age, String gender, String bloodGroup, String history) throws SQLException {
 
-       getPatientConnection();
+        getPatientConnection();
 
         String sql = "INSERT INTO patients (patient_id, password, name, phone_number, age, gender, blood_group, medical_history) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -78,29 +81,29 @@ public class db {
     }
 
     public Patient authenticatePatient(String patientId, String password) throws SQLException {
-               getPatientConnection();
-               String sql = "SELECT * FROM patients WHERE patient_id = ? AND password = ?";
+        getPatientConnection();
+        String sql = "SELECT * FROM patients WHERE patient_id = ? AND password = ?";
 
 
         try (PreparedStatement pstmt = patientConn.prepareStatement(sql)) {
-                    pstmt.setString(1, patientId);
-                    pstmt.setString(2, password);
+            pstmt.setString(1, patientId);
+            pstmt.setString(2, password);
 
-                    try (ResultSet rs = pstmt.executeQuery()) {    //check
-                        if (rs.next()) { return new Patient(
-                                rs.getString("patient_id"),
-                                rs.getString("name"),
-                                rs.getString("phone_number"),
-                                rs.getInt("age"),
-                                rs.getString("gender"),
-                                rs.getString("blood_group"),
-                                rs.getString("medical_history")
-                        ); }   // paile true
-                        else { return null; }
-                    }
+            try (ResultSet rs = pstmt.executeQuery()) {    //check
+                if (rs.next()) { return new Patient(
+                        rs.getString("patient_id"),
+                        rs.getString("name"),
+                        rs.getString("phone_number"),
+                        rs.getInt("age"),
+                        rs.getString("gender"),
+                        rs.getString("blood_group"),
+                        rs.getString("medical_history")
+                ); }   // paile true
+                else { return null; }
+            }
 
 
-               }
+        }
 
     }
 
@@ -123,7 +126,29 @@ public class db {
         }
         return list;
     }
+    public Patient getPatientById(String id) throws SQLException {
+        getPatientConnection();
+        String sql = "SELECT * FROM patients WHERE patient_id = ?";
 
+        try (PreparedStatement pstmt = patientConn.prepareStatement(sql)) {
+            pstmt.setString(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+
+                    return new Patient(
+                            rs.getString("patient_id"),
+                            rs.getString("name"),
+                            rs.getString("phone_number"),
+                            rs.getInt("age"),
+                            rs.getString("gender"),
+                            rs.getString("blood_group"),
+                            rs.getString("medical_history")
+                    );
+                }
+            }
+        }
+        return null;
+    }
 
     public void createDoctorTable() {
         String sql = "CREATE TABLE IF NOT EXISTS doctors ("
@@ -192,6 +217,35 @@ public class db {
 
         }
 
+    }
+    void createAppointmentTable() throws SQLException {
+        getDoctorConnection(); // Ensure we are using the doctor database
+        String sql = "CREATE TABLE IF NOT EXISTS appointments (" +
+                "app_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "patient_id TEXT, " +
+                "doctor_id TEXT, " +
+                "appointment_date TEXT, " +
+                "status TEXT DEFAULT 'PENDING'" +
+                ")";
+        try (Statement stmt = doctorConn.createStatement()) {
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    public void saveAppointmentRequest(String patientId, String doctorId, String appDate) throws SQLException {
+        getDoctorConnection();
+
+        String sql = "INSERT INTO appointments (patient_id, doctor_id, appointment_date, status) VALUES (?, ?, ?, 'PENDING')";
+
+        try (PreparedStatement pstmt = doctorConn.prepareStatement(sql)) {
+            pstmt.setString(1, patientId);
+            pstmt.setString(2, doctorId);
+            pstmt.setString(3, appDate);
+            pstmt.executeUpdate();
+        }
     }
 }
 

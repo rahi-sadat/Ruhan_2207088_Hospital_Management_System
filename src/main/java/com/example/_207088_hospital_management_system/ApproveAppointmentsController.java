@@ -42,7 +42,7 @@ public class ApproveAppointmentsController {
         try {
             database.updateAppointmentStatus(selected.getAppId(), "APPROVED");
             loadPendingAppointments();   // approve howar por abar load
-                                        // karon only pending rakhbo  
+                                        // karon only pending rakhbo
             new Alert(Alert.AlertType.INFORMATION, "Appointment Approved Successfully!").show();
         } catch (SQLException e) {
             e.printStackTrace();

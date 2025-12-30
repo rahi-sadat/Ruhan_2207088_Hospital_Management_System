@@ -16,6 +16,7 @@ public class db {
             createTable();
             createDoctorTable();
             createAppointmentTable();
+            addReportColumn();
             logger.info("Database initialized and tables verified.");
 
 
@@ -23,12 +24,21 @@ public class db {
             logger.severe("Could not initialize database: " + e.getMessage());
         }
     }
-    public void getPatientConnection() throws SQLException {
-        if (patientConn == null || patientConn.isClosed()) {
-            patientConn = DriverManager.getConnection("jdbc:sqlite:patient.db");
-            logger.info("Connected to patient.db");
+    public Connection getPatientConnection() throws SQLException {
+
+            try {
+
+                if (patientConn == null || patientConn.isClosed()) {
+
+                    patientConn = DriverManager.getConnection("jdbc:sqlite:patient.db");
+                    logger.info("Connected to patient.db");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return patientConn;
         }
-    }
+
     public void getDoctorConnection() throws SQLException {
         if (doctorConn == null || doctorConn.isClosed()) {
             doctorConn = DriverManager.getConnection("jdbc:sqlite:doctor.db");
@@ -274,6 +284,17 @@ public class db {
             pstmt.setString(1, newStatus);
             pstmt.setInt(2, appId);
             pstmt.executeUpdate();
+        }
+    }
+    public void addReportColumn() throws SQLException { // report er column add korlam
+        getPatientConnection();
+        String sql = "ALTER TABLE patients ADD COLUMN report_path TEXT";
+        try (Statement stmt = patientConn.createStatement()) {
+            stmt.execute(sql);
+            System.out.println("Column 'report_path' added successfully.");
+        } catch (SQLException e) {
+
+            System.out.println("Column might already exist: " + e.getMessage());
         }
     }
 }

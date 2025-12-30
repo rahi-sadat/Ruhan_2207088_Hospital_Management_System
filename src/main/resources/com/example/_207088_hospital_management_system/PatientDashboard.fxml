@@ -10,7 +10,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example._207088_hospital_management_system.PatientDashboardController">
     <left>
-        <VBox prefHeight="600.0" prefWidth="220.0"  BorderPane.alignment="CENTER">
+        <VBox prefHeight="600.0" prefWidth="220.0" BorderPane.alignment="CENTER">
             <children>
                 <VBox alignment="CENTER" prefHeight="150.0" prefWidth="220.0" spacing="10.0">
                     <children>
@@ -34,7 +34,7 @@
                                 <Insets left="30.0" />
                             </padding>
                         </Button>
-                        <Button fx:id="btnReports" alignment="BASELINE_LEFT" onAction="#showReports" prefHeight="45.0" prefWidth="220.0" text="Medical Reports">
+                        <Button fx:id="btnReports" alignment="BASELINE_LEFT" onAction="#handleUploadReports" prefHeight="45.0" prefWidth="220.0" text="Medical Reports">
                             <padding>
                                 <Insets left="30.0" />
                             </padding>

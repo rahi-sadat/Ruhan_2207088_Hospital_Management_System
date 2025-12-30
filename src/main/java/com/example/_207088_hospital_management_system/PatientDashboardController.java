@@ -6,10 +6,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class PatientDashboardController {
     @FXML
@@ -41,10 +48,49 @@ public class PatientDashboardController {
         newStage.show();
     }
 
-    public void showReports(ActionEvent actionEvent) {
-        loadView("PatientReports.fxml");
-    }
+    public void handleUploadReports(ActionEvent actionEvent) throws SQLException {
+        FileChooser fileChooser = new FileChooser();
 
+
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+        );
+
+        // Show the dialog
+        File selectedFile = fileChooser.showOpenDialog(((Node) actionEvent.getSource()).getScene().getWindow());
+
+        if (selectedFile != null) {
+            new Alert(Alert.AlertType.INFORMATION, "Report uploaded successfully " ).showAndWait();
+            String filePath = selectedFile.getAbsolutePath();
+            saveReportPathToDatabase(filePath);
+        }
+    }
+    private void saveReportPathToDatabase(String path) throws SQLException {
+        String patientId = UserSession.getUserId();
+        String sql = "UPDATE patients SET report_path = ? WHERE patient_id = ?";
+
+        db database = new db();
+        Connection conn = database.getPatientConnection();
+
+        if (conn == null) {
+            System.err.println("Error: Database connection is null!");
+            return;
+        }
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, path);
+            pstmt.setString(2, patientId);
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Report path saved successfully!");
+            } else {
+                System.out.println("No patient found with ID: " + patientId);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public void showBookAppointment(ActionEvent actionEvent) {
         loadView("BookAppointment.fxml");
 

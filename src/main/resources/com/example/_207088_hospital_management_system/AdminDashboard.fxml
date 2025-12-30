@@ -11,7 +11,7 @@
       <VBox alignment="CENTER" prefHeight="274.0" prefWidth="131.0" spacing="15.0" BorderPane.alignment="CENTER">
          <children>
             <Button fx:id="btnViewPatients" alignment="CENTER" lineSpacing="4.0" mnemonicParsing="false" onAction="#handleViewPatients" prefHeight="26.0" prefWidth="132.0" text="View All Patients" />
-            <Button alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="131.0" text="Appointment Approval">
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#handleShowApproveAppointments" prefHeight="30.0" prefWidth="131.0" text="Appointment Approval">
                <font>
                   <Font size="10.0" />
                </font>

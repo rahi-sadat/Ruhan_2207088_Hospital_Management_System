@@ -219,7 +219,7 @@ public class db {
 
     }
     void createAppointmentTable() throws SQLException {
-        getDoctorConnection(); // Ensure we are using the doctor database
+        getDoctorConnection(); // Ensure kortechi  using the doctor database
         String sql = "CREATE TABLE IF NOT EXISTS appointments (" +
                 "app_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "patient_id TEXT, " +
@@ -244,6 +244,35 @@ public class db {
             pstmt.setString(1, patientId);
             pstmt.setString(2, doctorId);
             pstmt.setString(3, appDate);
+            pstmt.executeUpdate();
+        }
+    }
+    public List<Appointment> getAppointmentsByStatus(String status) throws SQLException {
+        getDoctorConnection();
+        List<Appointment> list = new ArrayList<>();
+        String sql = "SELECT * FROM appointments WHERE status = ?";
+        try (PreparedStatement pstmt = doctorConn.prepareStatement(sql)) {
+            pstmt.setString(1, status);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                list.add(new Appointment(
+                        rs.getInt("app_id"),
+                        rs.getString("patient_id"),
+                        rs.getString("doctor_id"),
+                        rs.getString("appointment_date"),
+                        rs.getString("status")
+                ));
+            }
+        }
+        return list;
+    }
+
+    public void updateAppointmentStatus(int appId, String newStatus) throws SQLException {
+        getDoctorConnection();
+        String sql = "UPDATE appointments SET status = ? WHERE app_id = ?";
+        try (PreparedStatement pstmt = doctorConn.prepareStatement(sql)) {
+            pstmt.setString(1, newStatus);
+            pstmt.setInt(2, appId);
             pstmt.executeUpdate();
         }
     }

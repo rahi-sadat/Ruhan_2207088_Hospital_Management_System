@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="20.0" alignment="TOP_CENTER" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example._207088_hospital_management_system.ApproveAppointmentsController">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+    <children>
+        <Label text="Pending Appointment Approvals">
+            <font>
+                <Font name="System Bold" size="22.0" />
+            </font>
+        </Label>
+        <TableView fx:id="tblPending" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colPatientId" prefWidth="120.0" text="Patient ID" />
+                <TableColumn fx:id="colDoctorId" prefWidth="120.0" text="Doctor ID" />
+                <TableColumn fx:id="colDate" prefWidth="150.0" text="Requested Date" />
+                <TableColumn fx:id="colStatus" prefWidth="100.0" text="Status" />
+            </columns>
+        </TableView>
+        <Button mnemonicParsing="false" onAction="#handleApproveAction" prefHeight="40.0" prefWidth="200.0"
+                text="Approve Selected" />
+    </children>
+</VBox>

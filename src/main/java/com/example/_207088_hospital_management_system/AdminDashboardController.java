@@ -52,5 +52,11 @@ public class AdminDashboardController {
 
         }
     }
+    @FXML
+    public void handleShowApproveAppointments(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ApproveAppointments.fxml"));
+        Parent root = loader.load();
+        centerContentPane.getChildren().setAll(root);
+    }
     }
 

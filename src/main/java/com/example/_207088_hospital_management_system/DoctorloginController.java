@@ -3,6 +3,7 @@ package com.example._207088_hospital_management_system;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -27,15 +28,20 @@ public class DoctorloginController {
 
             String authenticatedId =database.authenticateDoctor(DoctorId,password);
             if(authenticatedId!=null){
-                  FXMLLoader loader = new FXMLLoader((getClass().getResource("DoctorDashboard.fxml")));
-                Parent root= loader.load();
-                  Stage stage = new Stage();
-                Scene scene = new Scene(root);
-                stage.setScene(scene);
-                stage.setTitle("Doctor Dashboard");
-                stage.show();
 
 
+                String doctorName = database.getDoctorNameById(authenticatedId);
+
+
+                UserSession.setSession(authenticatedId, doctorName, "DOCTOR");
+
+
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("DoctorDashboard.fxml"));
+                Parent root = fxmlLoader.load();
+                Stage newStage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+
+                newStage.setScene(new Scene(root));
+                newStage.show();
 
 
             }

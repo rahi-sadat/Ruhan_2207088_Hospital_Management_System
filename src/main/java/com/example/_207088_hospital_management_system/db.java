@@ -39,11 +39,17 @@ public class db {
             return patientConn;
         }
 
-    public void getDoctorConnection() throws SQLException {
-        if (doctorConn == null || doctorConn.isClosed()) {
-            doctorConn = DriverManager.getConnection("jdbc:sqlite:doctor.db");
-            logger.info("Connected to doctor.db");
+    public Connection getDoctorConnection() throws SQLException {
+        try {
+            if (doctorConn == null || doctorConn.isClosed()) {
+                doctorConn = DriverManager.getConnection("jdbc:sqlite:doctor.db");
+                logger.info("Connected to doctor.db");
+            }
         }
+        catch (Exception e) {
+              e.printStackTrace();
+        }
+        return doctorConn;
     }
     public void  createTable() throws SQLException {
 
@@ -107,7 +113,8 @@ public class db {
                         rs.getInt("age"),
                         rs.getString("gender"),
                         rs.getString("blood_group"),
-                        rs.getString("medical_history")
+                        rs.getString("medical_history"),
+                        rs.getString("report_path")
                 ); }   // paile true
                 else { return null; }
             }
@@ -130,8 +137,8 @@ public class db {
                         rs.getInt("age"),
                         rs.getString("gender"),
                         rs.getString("blood_group"),
-                        rs.getString("medical_history")
-                ));
+                        rs.getString("medical_history"),
+                        rs.getString("report_path") ));
             }
         }
         return list;
@@ -152,7 +159,8 @@ public class db {
                             rs.getInt("age"),
                             rs.getString("gender"),
                             rs.getString("blood_group"),
-                            rs.getString("medical_history")
+                            rs.getString("medical_history"),
+                            rs.getString("report_path")
                     );
                 }
             }
@@ -258,20 +266,25 @@ public class db {
         }
     }
     public List<Appointment> getAppointmentsByStatus(String status) throws SQLException {
-        getDoctorConnection();
         List<Appointment> list = new ArrayList<>();
         String sql = "SELECT * FROM appointments WHERE status = ?";
-        try (PreparedStatement pstmt = doctorConn.prepareStatement(sql)) {
+
+
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:doctor.db");
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setString(1, status);
-            ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-                list.add(new Appointment(
-                        rs.getInt("app_id"),
-                        rs.getString("patient_id"),
-                        rs.getString("doctor_id"),
-                        rs.getString("appointment_date"),
-                        rs.getString("status")
-                ));
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+
+                    list.add(new Appointment(
+                            rs.getInt("app_id"),
+                            rs.getString("patient_id"),
+                            rs.getString("doctor_id"),
+                            rs.getString("appointment_date"),
+                            rs.getString("status")
+                    ));
+                }
             }
         }
         return list;
@@ -296,6 +309,104 @@ public class db {
 
             System.out.println("Column might already exist: " + e.getMessage());
         }
+    }
+    public void updateDoctorPassword(String id, String password) throws SQLException {
+
+            Connection conn = getDoctorConnection();
+
+            if (conn == null) {
+                throw new SQLException("Database connection is null!");
+            }
+
+            String sql = "UPDATE doctors SET password = ? WHERE id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, password);
+                pstmt.setString(2, id);
+
+                int rowsAffected = pstmt.executeUpdate();
+                System.out.println("Password update rows affected: " + rowsAffected);
+            }
+
+    }
+    public Doctor getDoctorDetails(String doctorId) throws SQLException {
+        String sql = "SELECT * FROM doctors WHERE id = ?";
+
+
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:doctor.db");
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, doctorId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Doctor(
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getString("specialization"),
+                            rs.getString("phone"),
+                            rs.getString("email"),
+                            rs.getString("schedule")
+                    );
+                }
+            }
+        }
+        return null;
+    }
+    public String getDoctorNameById(String id) throws SQLException {
+        String sql = "SELECT name FROM doctors WHERE id = ?";
+
+
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:doctor.db");
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, id);
+
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("name");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "Unknown Doctor";
+    }
+    public List<Appointment> getDoctorAppointments(String doctorId) throws SQLException {
+        List<Appointment> list = new ArrayList<>();
+        String sql = "SELECT * FROM appointments WHERE doctor_id = ? AND status = 'APPROVED'";
+
+
+        try (Connection conn = getDoctorConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, doctorId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Appointment app = new Appointment(
+                            rs.getInt("app_id"),
+                            rs.getString("patient_id"),
+                            rs.getString("doctor_id"),
+                            rs.getString("appointment_date"),
+                            rs.getString("status")
+                    );
+
+
+                    Patient p = getPatientById(app.getPatientId());
+                    if (p != null) {
+                        app.setPatientName(p.getName());
+                        app.setAge(p.getAge());
+                        app.setGender(p.getGender());
+                        app.setBloodGroup(p.getBloodGroup());
+                        app.setMedicalHistory(p.getHistory());
+
+                         app.setReportPath(p.getPath());
+                    }
+                    list.add(app);
+                }
+            }
+        }
+        return list;
     }
 }
 

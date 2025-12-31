@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="10" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example._207088_hospital_management_system.DoctorAppointmentsController">
+    <TableView fx:id="tblAppointments" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colName" text="Patient Name" prefWidth="120"/>
+            <TableColumn fx:id="colAge" text="Age" prefWidth="50"/>
+            <TableColumn fx:id="colGender" text="Gender" prefWidth="80"/>
+            <TableColumn fx:id="colBlood" text="Blood" prefWidth="60"/>
+            <TableColumn fx:id="colHistory" text="History" prefWidth="150"/>
+            <TableColumn fx:id="colDate" text="Date" prefWidth="100"/>
+            <TableColumn fx:id="colReport" text="Report Preview" prefWidth="100"/>
+        </columns>
+    </TableView>
+
+    <Button text="Mark Selected as Visited" onAction="#handleMarkVisited"
+            maxWidth="Infinity"/>
+</VBox>

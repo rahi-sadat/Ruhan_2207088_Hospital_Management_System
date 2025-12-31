@@ -408,5 +408,16 @@ public class db {
         }
         return list;
     }
+    public void deleteDoctor(int doctorId) throws SQLException {
+        String sql = "DELETE FROM doctors WHERE id = ?";
+
+
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:doctor.db");
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, doctorId);
+            pstmt.executeUpdate();
+        }
+    }
 }
 

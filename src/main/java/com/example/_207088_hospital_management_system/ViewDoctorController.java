@@ -3,6 +3,7 @@ package com.example._207088_hospital_management_system;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -46,6 +47,32 @@ public class ViewDoctorController {
         } catch (SQLException e) {
             System.err.println("Error fetching doctor data: " + e.getMessage());
 
+        }
+    }
+    @FXML
+    private void handleDeleteDoctor() {
+           // doctor select korlam
+        Doctor selectedDoc = doctorTable.getSelectionModel().getSelectedItem();
+
+
+        if (selectedDoc == null) {
+            new Alert(Alert.AlertType.WARNING, "Please select a doctor to delete.").show();
+            return;
+        }
+
+        try {
+    // db te ei method ache
+            new db().deleteDoctor(selectedDoc.getId());
+
+           // table thake remove
+            doctorTable.getItems().remove(selectedDoc);
+
+
+            System.out.println("Doctor " + selectedDoc.getName() + " deleted.");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Database error: Could not delete doctor.").show();
         }
     }
 }
